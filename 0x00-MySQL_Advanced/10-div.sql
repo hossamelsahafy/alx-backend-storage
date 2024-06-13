@@ -12,11 +12,12 @@
 -- And returns a / b or 0 if b == 0
 DROP FUNCTION IF EXISTS SafeDiv;
 DELIMITER $$
-CREATE FUNCTION SafeDiv(a INT, b INT) RETURNS FLOAT DEFAULT 0;
+CREATE FUNCTION SafeDiv (a INT, b INT) RETURNS FLOAT DETERMINISTIC
 BEGIN
-    IF b = 0 THEN
-        RETURN 0;
+    DECLARE result FLOAT DEFAULT 0;
+    IF b != 0 THEN
+        SET result = a / b;
     END IF;
-    RETURN a / b;
+    RETURN result;
 END $$
 DELIMITER ;
