@@ -5,21 +5,22 @@ DELIMITER $$
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
     DECLARE done INT DEFAULT FALSE;
-    DECLARE cur_user_id INT;
-    DECLARE cur_cursor CURSOR FOR SELECT id FROM users;
+    DECLARE user_id INT;
+    DECLARE cur CURSOR FOR SELECT id FROM users;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    OPEN cur_cursor;
+    OPEN cur;
 
     read_loop: LOOP
-        FETCH cur_cursor INTO cur_user_id;
+        FETCH cur INTO user_id;
         IF done THEN
             LEAVE read_loop;
         END IF;
 
-        CALL ComputeAverageWeightedScoreForUser(cur_user_id);
+        CALL ComputeAverageWeightedScoreForUser(user_id);
     END LOOP;
 
-    CLOSE cur_cursor;
+    CLOSE cur;
 END$$
+
 DELIMITER ;
