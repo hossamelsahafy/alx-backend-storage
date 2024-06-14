@@ -22,5 +22,4 @@ BEGIN
 
     CLOSE cur_cursor;
 END$$
-
 DELIMITER ;
