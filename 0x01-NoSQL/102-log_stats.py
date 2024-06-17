@@ -31,7 +31,7 @@ def log_stats():
         {"$limit": 10}
     ])
     for ip in top:
-        print("\t{} : {}".format(ip['_id'], ip['count']))
+        print("\t{}: {}".format(ip['_id'], ip['count']))
     
     
 if __name__ == "__main__":
