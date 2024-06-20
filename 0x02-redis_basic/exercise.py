@@ -2,7 +2,7 @@
 """
     Writing strings to Redis
 """
-from typing import Union
+from typing import Union, Callable, Optional
 import uuid
 import redis
 
@@ -28,3 +28,34 @@ class Cache:
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key        
+
+
+    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, bytes, int, float, None]:
+        """
+            method that take a key string argument and
+            an optional Callable argument named fn.
+            This callable will be used to
+            convert the data back to the desired format. 
+        """
+        data = self._redis.get(key)
+        if data is None:
+            return None
+        if fn:
+            return fn(data)
+        return data
+
+
+    def get_str(self, key: str)-> Optional[str]:
+        """
+            Method that retrieves a string from Redis
+            using the get method
+        """
+        return self.get(key, fn=lambda x: x.decode('utf-8'))
+
+
+    def get_int(self, key: int) -> Optional[int]:
+        """
+            Method that retrieves a Int from Redis
+            using the get method
+        """
+        return self.get(key, fn=int)
