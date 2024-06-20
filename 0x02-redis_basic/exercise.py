@@ -96,3 +96,21 @@ class Cache:
             using the get method
         """
         return self.get(key, fn=int)
+
+
+def replay(method: Callable):
+    """
+        Display the history of calls of a particular function
+    """
+    r = redis.Redis()
+    input_key = f"{method.__qualname__}:inputs"
+    output_key = f"{method.__qualname__}:outputs"
+
+    inputs = r.lrange(input_key, 0, -1)
+    outputs = r.lrange(output_key, 0, -1)
+
+    print(f"{method.__qualname__} was called {len(inputs)} times:")
+    for input, output in zip(inputs, outputs):
+        input_str = input.decode("utf-8")
+        output_str = output.decode("utf-8")
+        print(f"{method.__qualname__}(*{input_str}) -> {output_str}")
