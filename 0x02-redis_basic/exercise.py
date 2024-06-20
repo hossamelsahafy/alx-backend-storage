@@ -8,11 +8,12 @@ import redis
 import functools
 
 
-def count_calls(method: callable):
+def count_calls(method: callable) -> callable:
     """
         we will implement a system to count how many times
         methods of the Cache class are called
     """
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         """Wrapper function to count method calls"""
