@@ -32,15 +32,12 @@ def call_history(method: Callable) -> Callable:
         """Wrapper function to store call history"""
         input_key = f"{method.__qualname__}:inputs"
         output_key = f"{method.__qualname__}:outputs"
-        
         self._redis.rpush(input_key, str(args))
-        
         result = method(self, *args, **kwargs)
-        
         self._redis.rpush(output_key, str(result))
-        
         return result
     return wrapper
+
 
 class Cache:
     """Define Cashe Class"""
@@ -51,7 +48,6 @@ class Cache:
         """
         self._redis = redis.Redis()
         self._redis.flushdb()
-
 
     @call_history
     @count_calls
@@ -64,15 +60,18 @@ class Cache:
         """
         key = str(uuid.uuid4())
         self._redis.set(key, data)
-        return key        
+        return key
 
-
-    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, bytes, int, float, None]:
+    def get(
+        self,
+        key: str,
+        fn: Optional[Callable] = None
+    ) -> Union[str, bytes, int, float, None]:
         """
             method that take a key string argument and
             an optional Callable argument named fn.
             This callable will be used to
-            convert the data back to the desired format. 
+            convert the data back to the desired format.
         """
         data = self._redis.get(key)
         if data is None:
@@ -81,14 +80,12 @@ class Cache:
             return fn(data)
         return data
 
-
-    def get_str(self, key: str)-> Optional[str]:
+    def get_str(self, key: str) -> Optional[str]:
         """
             Method that retrieves a string from Redis
             using the get method
         """
         return self.get(key, fn=lambda x: x.decode('utf-8'))
-
 
     def get_int(self, key: int) -> Optional[int]:
         """
