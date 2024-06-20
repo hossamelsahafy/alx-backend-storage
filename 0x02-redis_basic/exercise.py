@@ -8,7 +8,7 @@ import redis
 import functools
 
 
-def count_calls(method: callable) -> callable:
+def count_calls(method: Callable) -> Callable:
     """
         we will implement a system to count how many times
         methods of the Cache class are called
